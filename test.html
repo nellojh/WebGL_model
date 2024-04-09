@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>按钮函数示例</title>
+</head>
+
+<body>
+  <!DOCTYPE html>
+  <html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>GLBLoader3D模型展示</title>
+    <style>
+      body {
+        margin: 0;
+      }
+
+      .button-container {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+      }
+
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+
+
+
+      .popup-container {
+        display: none;
+        position: absolute;
+        width: 50vmax;
+        min-width: 70vmin;
+        height: 100%;
+        right: 0;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      .RightColumn-content {
+        position: absolute;
+        /* Position the element absolutely */
+        width: 60%;
+        height: 90%;
+        right: 20px;
+        /* Align to the right with a 10px offset */
+        display: flex;
+        align-items: center;
+      }
+
+
+      .board-table {
+        width: 100%;
+        max-height: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        position: relative;
+      }
+
+      .background-board {
+        position: absolute;
+        width: 100%;
+        min-width: 52vmin;
+        height: 100%;
+        right: -2vmin;
+        top: -3vmin;
+        padding: 3vmin 2vmin;
+        background: #E5E8ED;
+        border-radius: 16px;
+        opacity: .92;
+      }
+
+      .s_board {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 70%;
+        padding: 0% 5%;
+        margin-bottom: 2vmin;
+        min-width: 45vmin;
+        pointer-events: all;
+      }
+
+      .s_board img {
+        height: 35%;
+        padding-left: 1vmin;
+      }
+
+      .returnMenu {
+        padding: 0%;
+        height: 4.5vmin;
+        width: 4.5vmin;
+        background: rgba(0, 0, 0, .28);
+        border-radius: 10vmin;
+        display: flex;
+        align-items: center;
+        outline: none;
+        z-index: 1;
+      }
+
+      .returnMenu img {
+        margin-left: 22%;
+        width: 70%;
+        height: 60%;
+        rotate: 180deg;
+      }
+
+      .linkButton {
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        padding: 0vmin 2vmin;
+        font-size: 1.6vmin;
+        min-width: 10vmin;
+        height: 4.8vmin;
+        background: rgba(237, 238, 240, .1);
+        box-shadow: 9px 4px 6px #5f67870a;
+        border-radius: 5vmin;
+        border: .15vmin solid #1F1F1F;
+        -webkit-backdrop-filter: blur(7.2px);
+        backdrop-filter: blur(7.2px);
+        transition: all .5s;
+        pointer-events: all;
+        color: #000;
+        -webkit-line-clamp: 1;
+        flex-direction: row;
+      }
+
+      .board-little {
+        position: relative;
+        width: 100%;
+        height: 24vmin;
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        transition: all .5s;
+        pointer-events: all;
+      }
+
+      .board-little-body {
+        width: 90%;
+        height: 84%;
+        background: rgba(237, 238, 240, .84);
+        border-radius: 1vmin;
+        border: .15vmin solid;
+        border-color: #fff;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 1vmin 1vmin 1.5vmin #00000012;
+        transition: all .5s;
+      }
+
+      .board-little-body .board-little-body-text {
+        width: 50%;
+        height: 60%;
+        margin: 10%;
+        font-size: small;
+      }
+
+      .board-body-BGImg {
+        position: absolute;
+        bottom: 0%;
+        left: 0%;
+        height: 80%;
+      }
+
+      img {
+        overflow-clip-margin: content-box;
+        overflow: clip;
+      }
+
+      .board-body-PDImg {
+        position: absolute;
+        bottom: 0%;
+        right: 0%;
+        height: 100%;
+      }
+
+      .board-little-title {
+        position: absolute;
+        pointer-events: none;
+        top: 0%;
+        left: 10%;
+        width: 40vmin;
+        background: #EDEEF0;
+        box-shadow: 1vmin 1vmin 1vmin #5f678717;
+        border-radius: 2vmin;
+        border: .3vmin solid;
+        border-color: #fff;
+        overflow: hidden;
+        scale: .5;
+        transform: translate(-50%, -50%);
+        transition: all .3s;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+
+      .little-title-bar1 {
+        width: 88%;
+        height: 32%;
+        padding: 1vmin 6%;
+        text-align: left;
+        font-size: 2.2vmin;
+        font-weight: 600;
+        color: #536282;
+        display: flex;
+        align-items: center;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div class="button-container">
+      <button id="bt_1" onclick="get_pos">Point 1</button>
+      <button id="bt_2" onclick="get_pos">Point 2</button>
+      <button id="bt_3" onclick="get_pos">Point 3</button>
+      <button id="bt_4" onclick="get_pos">Point 4</button>
+      <button id="bt_5" onclick="get_pos">Point 5</button>
+      <button id="bt_6" onclick="get_pos">Point 6</button>
+      <button id="bt_show_detail" onclick="show_detail">切换详情</button>
+    </div>
+
+    <div class="popup-container">
+      <div class="RightColumn-content" style="scale: 1; transform: translateX(0%);">
+        <div class="board-table" style="opacity: 1; transform: none;">
+          <div class="background-board"></div>
+          <div class="s_board" style="width: 100%; padding: 0% 2.6%;">
+            <div class="returnMenu" style="background-color: rgba(0, 0, 0, 0.28);"><img src="/img/return.webp" alt="">
+            </div>
+            <div class="linkButton">前往安恒信息官网<img src="/img/ArrowB.webp" alt=""></div>
+          </div>
+          <div class="board-little">
+            <div class="board-little-body">
+              <div class="board-little-body-text">公司介绍公司介绍公司介绍公司介绍公司介绍公司介绍公司介绍公司介绍公司介绍公司介绍 公司介绍公司介绍</div>
+              <img class="board-body-BGImg" id="bgImage" src="/img/BGGrid.webp" alt="">
+              <img class="board-body-PDImg" id="companyImage" src="/img/mb1.webp" alt="">
+            </div>
+            <div class="board-little-title">
+              <div class="little-title-bar1">
+                <img id="pdImage" src="/img/m1.webp" alt="">
+                <div id="companyName" style="margin-left: 1vmin;">安恒信息</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="modelContainer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.131.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./build/three.module.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import * as THREE from './build/three.module.js';
+      import Stats from './jsm/libs/stats.module.js';
+      import { OrbitControls } from './jsm/controls/OrbitControls.js';
+      import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
+
+      var container, stats, controls, camera, scene, renderer, light;
+      var temp_sence, sence1, sence2, sence3, sence4, sence5, sence6;
+      var detail_sence1, detail_sence2, detail_sence3, detail_sence4, detail_sence5, detail_sence6;
+      var cur_pos = 1;
+      var detail_ = false;
+
+
+      var pos_robot_1,pos_robot_2,pos_robot_3,pos_robot_4,pos_robot_5,pos_robot_6;
+      var pos_robot;
+
+      init();
+      animate();
+      var mixer, mixer2;
+      var mouseDown = false;
+      var lastMouseX = null;
+      var startPosition;
+      var get_target = false;
+      document.addEventListener('mousedown', onMouseDown, false);
+      document.addEventListener('mousemove', onMouseMove, false);
+      document.addEventListener('mouseup', onMouseUp, false);
+
+      // 声明全局变量 startPosition
+      var startPosition;
+      var robotGroup;
+      function onMouseDown(event) {
+        if (get_target || detail_) {
+          return;
+        }
+        mouseDown = true;
+        lastMouseX = event.clientX;
+        startPosition = camera.position.clone(); // 记录摄像头初始位置
+        // 根据 deltaX 移动摄像头位置，并稍微后移一些
+
+        // camera.position.z += 1; // 视角稍微后移一些
+        moveCameraToPoint_smooth(camera.position.x, camera.position.y, camera.position.z + 5)
+      }
+
+      function onMouseMove(event) {
+        if (get_target || detail_) {
+          return;
+        }
+        if (!mouseDown) return;
+
+        var mouseX = event.clientX;
+
+
+        var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+        // console.log(movementX);
+        camera.position.x = camera.position.x - movementX * 0.01; // 调整移动速度
+        var del = camera.position.x - startPosition.x;
+        if (del > 0) {
+          camera.position.x = camera.position.x > startPosition.x + 5 ? startPosition.x + 5 : camera.position.x
+        } else {
+          camera.position.x = camera.position.x < startPosition.x - 5 ? startPosition.x - 5 : camera.position.x
+        }
+        // console.log(camera.position.x)
+        moveCameraToPoint_smooth(camera.position.x, camera.position.y, camera.position.z + 3)
+      }
+      function put_video(screen1, url) {
+        if (screen1) {
+          console.log("find that screen")
+          // 创建视频元素
+          var video = document.createElement('video');
+          video.src = url;
+          video.autoplay = true;
+          video.loop = true;
+          video.crossOrigin = 'anonymous'; // 跨域设置
+          video.muted = true;
+          // 获取屏幕的包围盒
+          var boundingBox = new THREE.Box3().setFromObject(screen1);
+
+          // 计算包围盒的尺寸
+          var screenWidth = boundingBox.max.x - boundingBox.min.x;
+          var screenHeight = boundingBox.max.y - boundingBox.min.y;
+
+          console.log(video)
+
+          // 视频缩放为screen大小
+          // 创建一个包含视频纹理的平面
+          var geometry = new THREE.PlaneGeometry(screenWidth, screenHeight);
+          var videoTexture = new THREE.VideoTexture(video);
+          var material = new THREE.MeshBasicMaterial({ map: videoTexture });
+          var plane = new THREE.Mesh(geometry, material);
+
+          
+          var screen1Position = screen1.position.clone();
+          var screen1Rotation = screen1.rotation.clone();
+          // plane.scale.set(10, 10, 10);
+          plane.position.copy(screen1Position);
+          if(url=='videos/video6.mp4'){ 
+            plane.position.z += 1.57;// 将平面稍微向前移动一些
+            plane.position.y += 0.44;// 将平面稍微向前移动一些
+          }
+            // plane.rotation.copy(screen1Rotation);
+          // 将平面添加到场景中
+
+          scene.add(plane);
+
+          // 旋转平面
+          // plane.rotation.y = Math.PI / 2; // 根据需要调整旋转角度
+
+          addEventListener('mousedown', () => {
+            video.play();
+          });
+        } else {
+          console.log("not found that screen")
+        }
+      }
+      function onMouseUp(event) {
+        if (get_target || detail_) {
+          return;
+        }
+        mouseDown = false;
+        // camera.position.copy(startPosition); // 松开鼠标后回到拖拽前的位置
+        startPosition = null; // 清除记录的初始位置
+        var mouseX = event.clientX;
+        var deltaX = mouseX - lastMouseX;
+        var threshold = window.innerWidth / 5; // 设置阈值
+
+        if (Math.abs(deltaX) >= threshold) { // 如果移动距离超过阈值
+          if (deltaX < 0) {
+            // 向右拖动，切换到下一个场景
+            if (cur_pos == 6) {
+
+            } else {
+              cur_pos = (cur_pos % 6) + 1;
+            }
+
+          } else {
+            // 向左拖动，切换到上一个场景
+
+            if (cur_pos == 1) {
+
+            } else {
+              cur_pos = (cur_pos - 2 + 6) % 6 + 1;
+            }
+          }
+          change_pos();
+          lastMouseX = mouseX;
+        }
+        change_pos();
+      }
+
+
+      function init() {
+        container = document.createElement('div');
+        document.body.appendChild(container);
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, .2, 1000);
+
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xa0a0a0);
+        scene.fog = new THREE.Fog(0xa0a0a0, 200, 1000);
+        light = new THREE.HemisphereLight(0xffffff, 0x444444);
+        light.position.set(0, 20, 0);
+        scene.add(light);
+        light = new THREE.DirectionalLight(0xffffff);
+        light.position.set(0, 20, 10);
+        light.castShadow = true;
+        scene.add(light);
+        var grid = new THREE.GridHelper(5, 20, 0x000000, 0x000000);
+        grid.material.opacity = 0.2;
+        grid.material.transparent = true;
+        scene.add(grid);
+
+        // 使用GLTFLoader加载GLB文件
+        var loader = new GLTFLoader();
+        loader.load('glb/stand5.glb', function (gltf) {
+          var object = gltf.scene;//object是获取到的整体场景大模型
+          
+
+          // sence系列代表的是摄像机的位置
+          sence1 = object.getObjectByName("Empty1");
+          sence2 = object.getObjectByName("Empty2");
+          sence3 = object.getObjectByName("Empty3");
+          sence4 = object.getObjectByName("Empty4");
+          sence5 = object.getObjectByName("Empty5");
+          sence6 = object.getObjectByName("Empty6");
+
+
+          //detail系列代表的是近景的摄像机位置
+          detail_sence1 = object.getObjectByName("Empty11");
+          detail_sence2 = object.getObjectByName("Empty22");
+          detail_sence3 = object.getObjectByName("Empty33");
+          detail_sence4 = object.getObjectByName("Empty44");
+          detail_sence5 = object.getObjectByName("Empty55");
+          detail_sence6 = object.getObjectByName("Empty66");
+
+          //screen代表的是屏幕，这里创建的是
+          var screen1 = object.getObjectByName("screen1");
+          var screen2 = object.getObjectByName("screen2");
+          var screen3 = object.getObjectByName("screen3");
+          var screen4 = object.getObjectByName("screen4");
+          var screen5 = object.getObjectByName("screen5");
+          var screen6 = object.getObjectByName("screen6");
+          var screen7 = object.getObjectByName("screen7");
+
+          //pos_robot_x 代表的是模型可能出现的位置,到时候把后面的参数改成对应模型里的名字
+          // 例如下面的注释
+          // pos_robot_1 = object.getObjectByName("robot1");
+          // pos_robot_2 = object.getObjectByName("robot2");
+          // pos_robot_3 = object.getObjectByName("robot3");
+          // pos_robot_4 = object.getObjectByName("robot4");
+          // pos_robot_5 = object.getObjectByName("robot5");
+          // pos_robot_6 = object.getObjectByName("robot6");
+         
+          pos_robot_1 = object.getObjectByName("screen1");
+          pos_robot_2 = object.getObjectByName("screen2");
+          pos_robot_3 = object.getObjectByName("screen3");
+          pos_robot_4 = object.getObjectByName("screen4");
+          pos_robot_5 = object.getObjectByName("screen5");
+          pos_robot_6 = object.getObjectByName("screen6");
+
+
+
+
+
+
+          // put_video(screen1, 'videos/video1.mp4');
+          // put_video(screen2, 'videos/video2.mp4');
+          put_video(screen3, 'videos/video3.mp4');
+          put_video(screen4, 'videos/video4.mp4');
+          put_video(screen5, 'videos/video5.mp4');
+          put_video(screen6, 'videos/video6.mp4');
+          // put_video(screen7, 'videos/video7.mp4');
+
+
+
+
+
+
+
+
+
+
+
+
+
+          var animations = gltf.animations;
+          mixer = new THREE.AnimationMixer(object);
+          for (var i = 0; i < animations.length; i++) {
+            var action = mixer.clipAction(animations[i]);
+            action.play();
+          }
+          mixer.timeScale = 0.5;
+          var boundingBox = new THREE.Box3().setFromObject(object);
+          var center = new THREE.Vector3();
+          boundingBox.getCenter(center);
+          camera.position.set(sence1.position.x, sence1.position.y, sence1.position.z);
+          camera.rotation.set(-0.009421160146172572, 0, 0);
+          scene.add(object);
+
+        });
+
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        container.appendChild(renderer.domElement);
+        controls = new OrbitControls(camera, renderer.domElement);
+        controls.target.set(0, 0, 0);
+        controls.update();
+        // 禁用旋转、平移和缩放功能
+        controls.enableRotate = false;
+        controls.enablePan = false;
+        controls.enableZoom = false;
+        window.addEventListener('resize', onWindowResize, false);
+
+        stats = new Stats();
+        container.appendChild(stats.dom);
+        stats.dom.remove();
+      }
+
+      function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        if (mixer) mixer.update(0.01);
+        if (mixer2) mixer2.update(0.005);//这个数值是用来单独控制模型人物的摆手速度的，越小越慢
+        renderer.render(scene, camera);
+        stats.update();
+      }
+
+      function show_detail() {
+        if (detail_ == true) {
+          console.log("remove")
+          removeModel();
+        }
+        detail_ = !detail_;
+        change_pos();
+        var popupContainer = document.querySelector('.popup-container');
+        popupContainer.style.display = detail_ ? 'block' : 'none';
+
+
+      }
+
+      function get_pos(event) {
+        if (detail_ == true) {
+          console.log("remove")
+          removeModel();
+        }
+        detail_ = false;
+        var popupContainer = document.querySelector('.popup-container');
+        popupContainer.style.display = detail_ ? 'block' : 'none';
+
+        var modelContainer = document.querySelector('#modelContainer');
+        modelContainer.style.display = detail_ ? 'block' : 'none';
+        var num = parseInt(event.target.id.split('_')[1]); // 从按钮的ID中提取出序号
+        cur_pos = num;
+        change_pos();
+      }
+      function updateContent(companyName, companyIntroduction, buttonText, CompanyImageSrc, pdImageSrc) {
+        document.getElementById('companyName').innerText = companyName;
+        document.querySelector('.board-little-body-text').innerText = companyIntroduction;
+        document.querySelector('.linkButton').innerText = buttonText;
+        document.getElementById('companyImage').src = CompanyImageSrc;
+        document.getElementById('pdImage').src = pdImageSrc;
+      }
+      function change_pos() {//这个函数是用来切换当前的位置的
+        
+        switch (cur_pos) {
+          case 1:
+            temp_sence = detail_ ? detail_sence1 : sence1;
+            pos_robot = pos_robot_1;
+            updateContent('新的公司名1', 
+                          '新的公司介绍1', 
+                          '新的按钮名称1', 
+                          '/img/mb1.webp', 
+                          '/img/m1.webp');
+            break;
+          case 2:
+            temp_sence = detail_ ? detail_sence2 : sence2;
+            pos_robot = pos_robot_2;
+            updateContent('新的公司名2', 
+                          '新的公司介绍2', 
+                          '新的按钮名称2', 
+                          '/img/mb1.webp', 
+                          '/img/m1.webp');
+            break;
+          case 3:
+            temp_sence = detail_ ? detail_sence3 : sence3;
+            pos_robot = pos_robot_3;
+            updateContent('新的公司名3', 
+                          '新的公司介绍3', 
+                          '新的按钮名称3', 
+                          '/img/mb1.webp', 
+                          '/img/m1.webp');
+            break;
+          case 4:
+            temp_sence = detail_ ? detail_sence4 : sence4;
+            pos_robot = pos_robot_4;
+            updateContent('新的公司名4', 
+                          '新的公司介绍4', 
+                          '新的按钮名称4', 
+                          '/img/mb1.webp', 
+                          '/img/m1.webp');
+            break;
+          case 5:
+            temp_sence = detail_ ? detail_sence5 : sence5;
+            pos_robot = pos_robot_5;
+            updateContent('新的公司名5', 
+                          '新的公司介绍5', 
+                          '新的按钮名称5', 
+                          '/img/mb1.webp', 
+                          '/img/m1.webp');
+            break;
+          case 6:
+            temp_sence = detail_ ? detail_sence6 : sence6;
+            pos_robot = pos_robot_6;
+            updateContent('新的公司名6', 
+                          '新的公司介绍6', 
+                          '新的按钮名称6', 
+                          '/img/mb1.webp', 
+                          '/img/m1.webp');
+            break;
+          default: break;
+        }
+        console.log(temp_sence);
+
+        moveCameraToPoint(temp_sence.position);
+        if (detail_) {
+          loadModel(pos_robot.position.x, pos_robot.position.y, pos_robot.position.z);
+        }
+      }
+
+      document.getElementById("bt_1").onclick = get_pos;
+      document.getElementById("bt_2").onclick = get_pos;
+      document.getElementById("bt_3").onclick = get_pos;
+      document.getElementById("bt_4").onclick = get_pos;
+      document.getElementById("bt_5").onclick = get_pos;
+      document.getElementById("bt_6").onclick = get_pos;
+      document.getElementById("bt_show_detail").onclick = show_detail;
+
+      function moveCameraToPoint(targetPosition) {
+        var duration = 1000;
+        var startPosition = camera.position.clone();
+        var startTime = Date.now();
+
+        function updateCameraPosition() {
+          var now = Date.now();
+          var elapsedTime = now - startTime;
+          var t = Math.min(1, elapsedTime / duration);
+          var newPosition = startPosition.clone().lerp(targetPosition, t);
+          camera.position.copy(newPosition);
+          if (t < 1) {
+            requestAnimationFrame(updateCameraPosition);
+          }
+        }
+
+        updateCameraPosition();
+      }
+
+      function moveCameraToPoint_smooth(x, y, z) {
+        var duration = 1000;
+        var startPosition = camera.position.clone();
+        var targetPosition = new THREE.Vector3(x, y, z); // 创建目标位置的三维向量
+        var startTime = Date.now();
+
+        function updateCameraPosition() {
+          var now = Date.now();
+          var elapsedTime = now - startTime;
+          var t = Math.min(1, elapsedTime / duration);
+          var newPosition = startPosition.clone().lerp(targetPosition, t); // 使用lerp插值计算新的位置
+          camera.position.copy(newPosition);
+          if (t < 1) {
+            requestAnimationFrame(updateCameraPosition);
+          }
+        }
+
+        updateCameraPosition();
+      }
+
+      function loadModel(x, y, z) {
+        var loader = new GLTFLoader();
+        loader.load('glb/RobotW.glb', function (gltf) {
+          var object = gltf.scene;
+
+
+          // 将模型缩放为原始大小的10倍
+          object.scale.set(10, 10, 10);
+
+          // 设置模型的位置为指定的 (x, y, z)
+          object.position.set(x, y, z);
+          var animations = gltf.animations;
+          mixer2 = new THREE.AnimationMixer(object);
+          for (var i = 0; i < animations.length; i++) {
+            var action = mixer2.clipAction(animations[i]);
+            action.setLoop(THREE.LoopPingPong); // 设置循环模式为来回循环
+            action.clampWhenFinished = true;
+            action.play(); // 播放动画
+          }
+
+          robotGroup = new THREE.Group();
+          robotGroup.add(object);
+          scene.add(robotGroup);
+        }, undefined, function (error) {
+          console.error(error);
+        });
+      }
+
+
+      function removeModel() {
+        // 查找并删除模型
+        scene.remove(robotGroup);
+        robotGroup = null;
+      }
+
+
+
+
+
+      document.querySelector('.popup-container').style.display = 'none';
+      document.querySelector('#modelContainer').style.display = 'none';
+
+    </script>
+  </body>
+
+  </html>

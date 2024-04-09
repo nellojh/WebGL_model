@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vertical Floating Action Button</title>
+
+</head>
+<style>
+    .popupContainer {
+        position: absolute;
+        width: 50vmax;
+        min-width: 70vmin;
+        height: 100%;
+        right: 0;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        pointer-events: none;
+        overflow: hidden;
+    }
+
+    .RightColumn-content {
+        width: 80%;
+        height: 90%;
+        display: flex;
+        align-items: center;
+    }
+
+    .board-table {
+        width: 100%;
+        max-height: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        position: relative;
+    }
+
+    .background-board {
+        position: absolute;
+        width: 100%;
+        min-width: 52vmin;
+        height: 100%;
+        right: -2vmin;
+        top: -3vmin;
+        padding: 3vmin 2vmin;
+        background: #E5E8ED;
+        border-radius: 16px;
+        opacity: .92;
+    }
+
+    .s_board {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 70%;
+        padding: 0% 5%;
+        margin-bottom: 2vmin;
+        min-width: 45vmin;
+        pointer-events: all;
+    }
+
+    .s_board img {
+        height: 35%;
+        padding-left: 1vmin;
+    }
+
+    .returnMenu {
+        padding: 0%;
+        height: 4.5vmin;
+        width: 4.5vmin;
+        background: rgba(0, 0, 0, .28);
+        border-radius: 10vmin;
+        display: flex;
+        align-items: center;
+        outline: none;
+        z-index: 1;
+    }
+
+    .returnMenu img {
+        margin-left: 22%;
+        width: 70%;
+        height: 60%;
+        rotate: 180deg;
+    }
+
+    .linkButton {
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        padding: 0vmin 2vmin;
+        font-size: 1.6vmin;
+        min-width: 10vmin;
+        height: 4.8vmin;
+        background: rgba(237, 238, 240, .1);
+        box-shadow: 9px 4px 6px #5f67870a;
+        border-radius: 5vmin;
+        border: .15vmin solid #1F1F1F;
+        -webkit-backdrop-filter: blur(7.2px);
+        backdrop-filter: blur(7.2px);
+        transition: all .5s;
+        pointer-events: all;
+        color: #000;
+        -webkit-line-clamp: 1;
+        flex-direction: row;
+    }
+
+    .board-little {
+        position: relative;
+        width: 100%;
+        height: 24vmin;
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        transition: all .5s;
+        pointer-events: all;
+    }
+
+    .board-little-body {
+        width: 90%;
+        height: 84%;
+        background: rgba(237, 238, 240, .84);
+        border-radius: 1vmin;
+        border: .15vmin solid;
+        border-color: #fff;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 1vmin 1vmin 1.5vmin #00000012;
+        transition: all .5s;
+    }
+    .board-little-body .board-little-body-text {
+        width: 50%;
+        height: 60%;
+        margin: 10%;
+        font-size: small;
+    }
+    .board-body-BGImg {
+        position: absolute;
+        bottom: 0%;
+        left: 0%;
+        height: 80%;
+    }
+
+    img {
+        overflow-clip-margin: content-box;
+        overflow: clip;
+    }
+
+    .board-body-PDImg {
+        position: absolute;
+        bottom: 0%;
+        right: 0%;
+        height: 100%;
+    }
+
+    .board-little-title {
+        position: absolute;
+        pointer-events: none;
+        top: 0%;
+        left: 10%;
+        width: 40vmin;
+        background: #EDEEF0;
+        box-shadow: 1vmin 1vmin 1vmin #5f678717;
+        border-radius: 2vmin;
+        border: .3vmin solid;
+        border-color: #fff;
+        overflow: hidden;
+        scale: .5;
+        transform: translate(-50%, -50%);
+        transition: all .3s;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    .little-title-bar1 {
+        width: 88%;
+        height: 32%;
+        padding: 1vmin 6%;
+        text-align: left;
+        font-size: 2.2vmin;
+        font-weight: 600;
+        color: #536282;
+        display: flex;
+        align-items: center;
+    }
+</style>
+
+<body>
+    <div class="popupContainer">
+        <div class="RightColumn-content" style="scale: 1; transform: translateX(0%);">
+            <div class="board-table" style="opacity: 1; transform: none;">
+                <div class="background-board"></div>
+                <div class="s_board" style="width: 100%; padding: 0% 2.6%;">
+                    <div class="returnMenu" style="background-color: rgba(0, 0, 0, 0.28);"><img src="/img/return.webp"
+                            alt=""></div>
+                    <div class="linkButton">前往安恒信息官网<img src="/img/ArrowB.webp" alt="">
+                    </div>
+                </div>
+                <div class="board-little">
+                    <div class="board-little-body">
+                        <div class="board-little-body-text">
+                            公司介绍公司介绍公司介绍公司介绍公司介绍公司介绍公司介绍公司介绍公司介绍公司介绍
+                            公司介绍公司介绍
+                        </div>
+                        
+                        <img class="board-body-BGImg" src="/img/BGGrid.webp" alt=""><img
+                            class="board-body-PDImg" src="/img/mb1.webp" alt="">
+                    </div>
+                    <div class="board-little-title">
+                        <div class="little-title-bar1">
+                            <img src="/img/m1.webp" alt="">
+                            <div style="margin-left: 1vmin;">安恒信息</div>
+                        </div>
+                        <!-- <div class="little-title-bar2"></div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+<script>
+
+
+</script>
+
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>GLBLoader3D模型展示</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        .button-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="button-container">
+        <button id="bt_1" onclick="get_pos">Point 1</button>
+        <button id="bt_2" onclick="get_pos">Point 2</button>
+        <button id="bt_3" onclick="get_pos">Point 3</button>
+        <button id="bt_4" onclick="get_pos">Point 4</button>
+        <button id="bt_5" onclick="get_pos">Point 5</button>
+        <button id="bt_6" onclick="get_pos">Point 6</button>
+        <button id="bt_show_detail" onclick="show_detail">切换详情</button>
+    </div>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./build/three.module.js"
+            }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from './build/three.module.js';
+        import Stats from './jsm/libs/stats.module.js';
+        import { OrbitControls } from './jsm/controls/OrbitControls.js';
+        import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
+
+        var container, stats, controls, camera, scene, renderer, light;
+        var temp_sence, sence1, sence2, sence3, sence4, sence5, sence6;
+        var detail_sence1, detail_sence2, detail_sence3, detail_sence4, detail_sence5, detail_sence6;
+        var cur_pos = 1;
+        var detail_ = false;
+        init();
+        animate();
+        var mixer;
+        var mouseDown = false;
+        var lastMouseX = null;
+        var startPosition;
+        var get_target = false;
+        document.addEventListener('mousedown', onMouseDown, false);
+        document.addEventListener('mousemove', onMouseMove, false);
+        document.addEventListener('mouseup', onMouseUp, false);
+
+        // 声明全局变量 startPosition
+        var startPosition;
+
+        function onMouseDown(event) {
+            if (get_target|| detail_) {
+                return;
+            }
+            mouseDown = true;
+            lastMouseX = event.clientX;
+            startPosition = camera.position.clone(); // 记录摄像头初始位置
+            // 根据 deltaX 移动摄像头位置，并稍微后移一些
+
+            // camera.position.z += 1; // 视角稍微后移一些
+            moveCameraToPoint_smooth(camera.position.x, camera.position.y, camera.position.z + 5)
+        }
+
+        function onMouseMove(event) {
+            if (get_target|| detail_) {
+                return;
+            }
+            if (!mouseDown) return;
+
+            var mouseX = event.clientX;
+
+
+            var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+            // console.log(movementX);
+            camera.position.x = camera.position.x - movementX * 0.01; // 调整移动速度
+            var del = camera.position.x - startPosition.x;
+            if (del > 0) {
+
+                camera.position.x = camera.position.x > startPosition.x + 5 ? startPosition.x + 5 : camera.position.x
+            } else {
+                camera.position.x = camera.position.x < startPosition.x - 5 ? startPosition.x - 5 : camera.position.x
+            }
+            // console.log(camera.position.x)
+            moveCameraToPoint_smooth(camera.position.x, camera.position.y, camera.position.z + 3)
+
+        }
+
+        function onMouseUp(event) {
+            if (get_target || detail_) {
+                return;
+            }
+            mouseDown = false;
+            // camera.position.copy(startPosition); // 松开鼠标后回到拖拽前的位置
+            startPosition = null; // 清除记录的初始位置
+            var mouseX = event.clientX;
+            var deltaX = mouseX - lastMouseX;
+            var threshold = window.innerWidth / 5; // 设置阈值
+
+            if (Math.abs(deltaX) >= threshold) { // 如果移动距离超过阈值
+                if (deltaX < 0) {
+                    // 向右拖动，切换到下一个场景
+                    if (cur_pos == 6) {
+
+                    } else {
+                        cur_pos = (cur_pos % 6) + 1;
+                    }
+
+                } else {
+                    // 向左拖动，切换到上一个场景
+
+                    if (cur_pos == 1) {
+
+                    } else {
+                        cur_pos = (cur_pos - 2 + 6) % 6 + 1;
+                    }
+                }
+                change_pos();
+                lastMouseX = mouseX;
+            }
+            change_pos();
+        }
+
+
+        function init() {
+            container = document.createElement('div');
+            document.body.appendChild(container);
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, .2, 1000);
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xa0a0a0);
+            scene.fog = new THREE.Fog(0xa0a0a0, 200, 1000);
+            light = new THREE.HemisphereLight(0xffffff, 0x444444);
+            light.position.set(0, 20, 0);
+            scene.add(light);
+            light = new THREE.DirectionalLight(0xffffff);
+            light.position.set(0, 20, 10);
+            light.castShadow = true;
+            scene.add(light);
+            var grid = new THREE.GridHelper(5, 20, 0x000000, 0x000000);
+            grid.material.opacity = 0.2;
+            grid.material.transparent = true;
+            scene.add(grid);
+
+            // 使用GLTFLoader加载GLB文件
+            var loader = new GLTFLoader();
+            loader.load('glb/stand3(9.glb', function (gltf) {
+                var object = gltf.scene;
+                sence1 = object.getObjectByName("Empty1");
+                sence2 = object.getObjectByName("Empty2");
+                sence3 = object.getObjectByName("Empty3");
+                sence4 = object.getObjectByName("Empty4");
+                sence5 = object.getObjectByName("Empty5");
+                sence6 = object.getObjectByName("Empty6");
+
+                detail_sence1 = object.getObjectByName("Empty11");
+                detail_sence2 = object.getObjectByName("Empty22");
+                detail_sence3 = object.getObjectByName("Empty33");
+                detail_sence4 = object.getObjectByName("Empty44");
+                detail_sence5 = object.getObjectByName("Empty55");
+                detail_sence6 = object.getObjectByName("Empty66");
+
+                var animations = gltf.animations;
+                mixer = new THREE.AnimationMixer(object);
+                for (var i = 0; i < animations.length; i++) {
+                    var action = mixer.clipAction(animations[i]);
+                    action.play();
+                }
+                mixer.timeScale = 0.5;
+                var boundingBox = new THREE.Box3().setFromObject(object);
+                var center = new THREE.Vector3();
+                boundingBox.getCenter(center);
+                camera.position.set(sence1.position.x, sence1.position.y, sence1.position.z);
+                camera.rotation.set(-0.009421160146172572, 0, 0);
+                scene.add(object);
+                scene.traverse(function (child) {
+                    console.log("Found the object:", child);
+                    // 判断对象是否是需要的物体
+                    if (child.name === "YourObjectName") {
+                        // 在这里对需要的物体进行操作
+                        console.log("Found the object:", child);
+                    }
+                });
+            });
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            container.appendChild(renderer.domElement);
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.target.set(0, 0, 0);
+            controls.update();
+            // 禁用旋转、平移和缩放功能
+            controls.enableRotate = false;
+            controls.enablePan = false;
+            controls.enableZoom = false;
+            window.addEventListener('resize', onWindowResize, false);
+
+            stats = new Stats();
+            container.appendChild(stats.dom);
+            stats.dom.remove();
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (mixer) mixer.update(0.01);
+            renderer.render(scene, camera);
+            stats.update();
+        }
+
+        function show_detail() {
+            detail_ = !detail_;
+            change_pos();
+        }
+
+        function get_pos(event) {
+            detail_=false;
+            var num = parseInt(event.target.id.split('_')[1]); // 从按钮的ID中提取出序号
+            cur_pos = num;
+            change_pos();
+        }
+
+        function change_pos() {
+            console.log(cur_pos);
+            switch (cur_pos) {
+                case 1:
+                    temp_sence = detail_ ? detail_sence1 : sence1;
+                    break;
+                case 2:
+                    temp_sence = detail_ ? detail_sence2 : sence2;
+                    break;
+                case 3:
+                    temp_sence = detail_ ? detail_sence3 : sence3;
+                    break;
+                case 4:
+                    temp_sence = detail_ ? detail_sence4 : sence4;
+                    break;
+                case 5:
+                    temp_sence = detail_ ? detail_sence5 : sence5;
+                    break;
+                case 6:
+                    temp_sence = detail_ ? detail_sence6 : sence6;
+                    break;
+                default: break;
+            }
+            console.log(temp_sence);
+            moveCameraToPoint(temp_sence.position);
+        }
+
+        document.getElementById("bt_1").onclick = get_pos;
+        document.getElementById("bt_2").onclick = get_pos;
+        document.getElementById("bt_3").onclick = get_pos;
+        document.getElementById("bt_4").onclick = get_pos;
+        document.getElementById("bt_5").onclick = get_pos;
+        document.getElementById("bt_6").onclick = get_pos;
+        document.getElementById("bt_show_detail").onclick = show_detail;
+
+        function moveCameraToPoint(targetPosition) {
+            var duration = 1000;
+            var startPosition = camera.position.clone();
+            var startTime = Date.now();
+
+            function updateCameraPosition() {
+                var now = Date.now();
+                var elapsedTime = now - startTime;
+                var t = Math.min(1, elapsedTime / duration);
+                var newPosition = startPosition.clone().lerp(targetPosition, t);
+                camera.position.copy(newPosition);
+                if (t < 1) {
+                    requestAnimationFrame(updateCameraPosition);
+                }
+            }
+
+            updateCameraPosition();
+        }
+
+        function moveCameraToPoint_smooth(x, y, z) {
+            var duration = 1000;
+            var startPosition = camera.position.clone();
+            var targetPosition = new THREE.Vector3(x, y, z); // 创建目标位置的三维向量
+            var startTime = Date.now();
+
+            function updateCameraPosition() {
+                var now = Date.now();
+                var elapsedTime = now - startTime;
+                var t = Math.min(1, elapsedTime / duration);
+                var newPosition = startPosition.clone().lerp(targetPosition, t); // 使用lerp插值计算新的位置
+                camera.position.copy(newPosition);
+                if (t < 1) {
+                    requestAnimationFrame(updateCameraPosition);
+                }
+            }
+
+            updateCameraPosition();
+        }
+
+
+    </script>
+</body>
+
+</html>
